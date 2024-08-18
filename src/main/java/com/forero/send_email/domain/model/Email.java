@@ -1,4 +1,4 @@
 package com.forero.send_email.domain.model;
 
-public record Email(Long id, String email, String plate, String message, String parkingName) {
+public record Email(String id, String email, String plate, String message, String parkingName) {
 }
