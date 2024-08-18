@@ -10,11 +10,6 @@ public class EmailUseCase {
     private final EmailService emailService;
 
     public Mono<String> sendEmail(final Email email) {
-        return emailService.send(email) // Llamada a la API externa o servicio de correo
-                .map(response -> "Email sent successfully")
-                .onErrorResume(error -> {
-                    // Manejo de errores, devolviendo un mensaje indicando el fallo
-                    return Mono.just("Failed to send email: " + error);
-                });
+        return emailService.send(email);
     }
 }

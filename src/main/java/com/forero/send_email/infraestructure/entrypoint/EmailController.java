@@ -28,8 +28,7 @@ public class EmailController {
     public Mono<EmailResponseDto> sendEmail(@RequestBody final EmailRequestDto emailRequestDto) {
         return this.sendEmailCommand.execute(this.emailMapper.toModel(emailRequestDto))
                 .doFirst(() -> log.info(LOGGER_PREFIX + "[sendEmail] request {}", emailRequestDto))
-                .map(result -> new EmailResponseDto(result))
-                .doOnSuccess(emailSendResponseDto ->
-                        log.info(LOGGER_PREFIX + "[sendEmail] response {}"));
+                .map(EmailResponseDto::new)
+                .doOnSuccess(response -> log.info(LOGGER_PREFIX + "[sendEmail] response {}", response));
     }
 }

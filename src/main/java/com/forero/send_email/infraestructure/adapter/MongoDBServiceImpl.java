@@ -19,14 +19,12 @@ public class MongoDBServiceImpl implements EmailService {
 
     @Override
     public Mono<String> send(final Email email) {
-
         return Mono.fromCallable(() -> {
-            // Simulación de la operación de envío de email
-            // Aquí podrías hacer la llamada real a la API externa o servidor SMTP
-            System.out.println("Enviando email a: " + email);
-
-            // Simulación de éxito
-            return "Email enviado exitosamente a: ";
+            log.info(LOGGER_PREFIX + "Enviando email a: {}", email.email());
+            return "Correo Enviado";
+        }).onErrorResume(error -> {
+            log.error(LOGGER_PREFIX + "Error al enviar email: {}", error.getMessage());
+            return Mono.just("Error al enviar email: " + error.getMessage());
         });
     }
 }
