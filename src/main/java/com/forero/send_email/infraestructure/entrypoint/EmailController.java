@@ -16,7 +16,7 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @RestController
-@RequestMapping("/email")
+@RequestMapping("/mail")
 @RequiredArgsConstructor
 public class EmailController {
     private static final String LOGGER_PREFIX = String.format("[%s] ", EmailController.class.getSimpleName());

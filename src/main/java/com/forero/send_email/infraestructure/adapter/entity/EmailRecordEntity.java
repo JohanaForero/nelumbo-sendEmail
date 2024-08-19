@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
 @Setter
-@Document(collection = "email")
+@Document(collection = "mail")
 public class EmailRecordEntity {
     @Id
     private String id;
