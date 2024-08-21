@@ -1,5 +1,6 @@
 package com.forero.send_email.infraestructure.entrypoint;
 
+import com.forero.send_email.application.command.GetTopEmailsQueryCommand;
 import com.forero.send_email.application.command.SendEmailCommand;
 import com.forero.send_email.infraestructure.dto.EmailRequestDto;
 import com.forero.send_email.infraestructure.dto.EmailResponseDto;
@@ -7,12 +8,16 @@ import com.forero.send_email.infraestructure.mapper.EmailMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -21,7 +26,7 @@ import reactor.core.publisher.Mono;
 public class EmailController {
     private static final String LOGGER_PREFIX = String.format("[%s] ", EmailController.class.getSimpleName());
     private final SendEmailCommand sendEmailCommand;
-    //    private final GetTopEmailsQueryCommand getTopEmailsQueryCommand;
+    private final GetTopEmailsQueryCommand getTopEmailsQueryCommand;
     private final EmailMapper emailMapper;
 
     @PostMapping("/send")
@@ -33,12 +38,11 @@ public class EmailController {
                 .doOnSuccess(response -> log.info(LOGGER_PREFIX + "[sendEmail] response {}", response));
     }
 
-//    @GetMapping("/top")
-//    @ResponseStatus(code = HttpStatus.OK)
-//    public Flux<EmailTopResponseDto> getTopEmails() {
-//        return this.getTopEmailsQueryCommand.execute()
-//                .doFirst(() -> log.info(LOGGER_PREFIX + "[getTopEmails] Request"))
-//                .map(emailTop -> new EmailTopResponseDto(emailTop.getEmailAddress(), emailTop.getSentCount()))
-//                .doOnComplete(() -> log.info(LOGGER_PREFIX + "[getTopEmails] Completed"));
-//    }
+    @GetMapping("/top")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Flux<Map<String, Object>> getTopEmails() {
+        return this.getTopEmailsQueryCommand.execute()
+                .doFirst(() -> log.info(LOGGER_PREFIX + "[getTopEmails] Request"))
+                .doOnComplete(() -> log.info(LOGGER_PREFIX + "[getTopEmails] Completed"));
+    }
 }

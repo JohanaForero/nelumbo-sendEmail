@@ -1,5 +1,6 @@
 package com.forero.send_email.infraestructure.configuration;
 
+import com.forero.send_email.application.command.GetTopEmailsQueryCommand;
 import com.forero.send_email.application.command.SendEmailCommand;
 import com.forero.send_email.application.service.RepositoryService;
 import com.forero.send_email.application.usecase.EmailUseCase;
@@ -18,5 +19,10 @@ public class EmailBeanConfiguration {
     @Bean
     public SendEmailCommand sendEmailCommand(final EmailUseCase emailUseCase) {
         return new SendEmailCommand(emailUseCase);
+    }
+
+    @Bean
+    public GetTopEmailsQueryCommand getTopEmailsQueryCommand(final EmailUseCase emailUseCase) {
+        return new GetTopEmailsQueryCommand(emailUseCase);
     }
 }

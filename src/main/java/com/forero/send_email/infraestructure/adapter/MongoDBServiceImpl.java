@@ -10,9 +10,11 @@ import com.forero.send_email.infraestructure.mapper.EmailMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -55,5 +57,10 @@ public class MongoDBServiceImpl implements RepositoryService {
     private Mono<EmailRecordEntity> handlerError(final Throwable error) {
         log.error(LOGGER_PREFIX + "[handlerError] Error occurred: {}", error.getMessage());
         return Mono.error(new RepositoryException(CodeException.INTERNAL_SERVER_ERROR, null));
+    }
+
+    @Override
+    public Flux<Map<String, Object>> getTopFiveRecords() {
+        return emailDao.findTopEmailsWithCounts();
     }
 }
