@@ -10,8 +10,6 @@ public class SendEmailCommand {
     private final EmailUseCase emailUseCase;
 
     public Mono<String> execute(final Email email) {
-        return emailUseCase.sendEmail(email)
-                .map(response -> "Email sent successfully")
-                .onErrorResume(error -> Mono.just("Failed to send email: " + error));
+        return emailUseCase.sendEmail(email);
     }
 }

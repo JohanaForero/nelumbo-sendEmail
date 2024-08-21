@@ -1,6 +1,7 @@
 package com.forero.send_email.infraestructure.mapper;
 
 import com.forero.send_email.domain.model.Email;
+import com.forero.send_email.infraestructure.adapter.entity.EmailRecordEntity;
 import com.forero.send_email.infraestructure.dto.EmailRequestDto;
 import com.forero.send_email.infraestructure.dto.EmailResponseDto;
 import org.mapstruct.Mapper;
@@ -12,4 +13,6 @@ public interface EmailMapper {
     Email toModel(EmailRequestDto emailRequestDto);
 
     EmailResponseDto toDto(Email email);
+
+    EmailRecordEntity toEntity(Email email);
 }
