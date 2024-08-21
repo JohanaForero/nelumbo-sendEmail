@@ -1,6 +1,8 @@
 package com.forero.send_email.infraestructure.adapter;
 
-import com.forero.send_email.application.service.EmailService;
+import com.forero.send_email.application.exception.RepositoryException;
+import com.forero.send_email.application.service.RepositoryService;
+import com.forero.send_email.domain.exception.CodeException;
 import com.forero.send_email.domain.model.Email;
 import com.forero.send_email.infraestructure.adapter.dao.EmailDao;
 import com.forero.send_email.infraestructure.adapter.entity.EmailRecordEntity;
@@ -10,10 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class MongoDBServiceImpl implements EmailService {
+public class MongoDBServiceImpl implements RepositoryService {
     private static final String LOGGER_PREFIX = String.format("[%s] ", MongoDBServiceImpl.class.getSimpleName());
     private final EmailMapper emailMapper;
     private final EmailDao emailDao;
@@ -26,8 +30,10 @@ public class MongoDBServiceImpl implements EmailService {
                 })
                 .flatMap(status -> {
                     if ("Correo Enviado".equals(status)) {
-                        EmailRecordEntity emailRecordEntity = emailMapper.toEntity(email);
-                        return emailDao.save(emailRecordEntity)
+                        EmailRecordEntity emailRecord = emailMapper.toEntity(email);
+                        emailRecord.setSentDate(LocalDateTime.now());
+
+                        return saveEntity(emailRecord)
                                 .thenReturn(status);
                     } else {
                         return Mono.just(status);
@@ -39,4 +45,15 @@ public class MongoDBServiceImpl implements EmailService {
                 });
     }
 
+    private Mono<EmailRecordEntity> saveEntity(final EmailRecordEntity entity) {
+        return this.emailDao.save(entity)
+                .doFirst(() -> log.info(LOGGER_PREFIX + "[saveEntity] Request {}", entity))
+                .doOnSuccess(savedEntity -> log.info(LOGGER_PREFIX + "[saveEntity] Response: {}", savedEntity))
+                .onErrorResume(this::handlerError);
+    }
+
+    private Mono<EmailRecordEntity> handlerError(final Throwable error) {
+        log.error(LOGGER_PREFIX + "[handlerError] Error occurred: {}", error.getMessage());
+        return Mono.error(new RepositoryException(CodeException.INTERNAL_SERVER_ERROR, null));
+    }
 }

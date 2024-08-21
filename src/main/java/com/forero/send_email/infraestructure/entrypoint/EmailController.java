@@ -21,6 +21,7 @@ import reactor.core.publisher.Mono;
 public class EmailController {
     private static final String LOGGER_PREFIX = String.format("[%s] ", EmailController.class.getSimpleName());
     private final SendEmailCommand sendEmailCommand;
+    //    private final GetTopEmailsQueryCommand getTopEmailsQueryCommand;
     private final EmailMapper emailMapper;
 
     @PostMapping("/send")
@@ -31,4 +32,13 @@ public class EmailController {
                 .map(EmailResponseDto::new)
                 .doOnSuccess(response -> log.info(LOGGER_PREFIX + "[sendEmail] response {}", response));
     }
+
+//    @GetMapping("/top")
+//    @ResponseStatus(code = HttpStatus.OK)
+//    public Flux<EmailTopResponseDto> getTopEmails() {
+//        return this.getTopEmailsQueryCommand.execute()
+//                .doFirst(() -> log.info(LOGGER_PREFIX + "[getTopEmails] Request"))
+//                .map(emailTop -> new EmailTopResponseDto(emailTop.getEmailAddress(), emailTop.getSentCount()))
+//                .doOnComplete(() -> log.info(LOGGER_PREFIX + "[getTopEmails] Completed"));
+//    }
 }
