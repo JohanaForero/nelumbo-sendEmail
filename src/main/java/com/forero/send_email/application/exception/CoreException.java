@@ -1,10 +1,14 @@
 package com.forero.send_email.application.exception;
 
 import com.forero.send_email.domain.exception.CodeException;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serial;
 import java.io.Serializable;
 
+@Getter
+@Slf4j
 public class CoreException extends RuntimeException implements Serializable {
     @Serial
     private static final long serialVersionUID = 9046745112834266474L;

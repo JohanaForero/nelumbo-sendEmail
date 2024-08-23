@@ -14,14 +14,14 @@ public class EmailUseCase {
     private final RepositoryService repositoryService;
 
     public Mono<String> sendEmail(final Email email) {
-        return repositoryService.send(email);
+        return this.repositoryService.send(email);
     }
 
     public Flux<Map<String, Object>> getTopFiveRecords() {
-        return repositoryService.getTopFiveRecords();
+        return this.repositoryService.getTopFiveRecords();
     }
 
-    public Mono<Long> getEmailStatistics(final Instant startDate, final Instant endDate) {
-        return repositoryService.getEmailStatistics(startDate, endDate);
+    public Mono<Long> getEmailStatisticsByRange(final Instant startDate, final Instant endDate) {
+        return this.repositoryService.getEmailStatistics(startDate, endDate);
     }
 }

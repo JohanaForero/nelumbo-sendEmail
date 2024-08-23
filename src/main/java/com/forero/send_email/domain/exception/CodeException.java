@@ -7,8 +7,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum CodeException {
-    EMPTY_LIST("No found emails."),
+    EMPTY_LIST("No emails were sent between and"),
     INTERNAL_SERVER_ERROR("Internal server error"),
+    DB_INTERNAL("Unavailable DB service"),
     INVALID_PARAMETERS("Invalid request parameters. Please check the %s and try again.");
 
     private final String messageFormat;

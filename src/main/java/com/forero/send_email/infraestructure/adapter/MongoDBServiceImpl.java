@@ -32,10 +32,10 @@ public class MongoDBServiceImpl implements RepositoryService {
                 })
                 .flatMap(status -> {
                     if ("Correo Enviado".equals(status)) {
-                        EmailRecordEntity emailRecord = emailMapper.toEntity(email);
+                        EmailRecordEntity emailRecord = this.emailMapper.toEntity(email);
                         emailRecord.setSentDate(Instant.now());
 
-                        return saveEntity(emailRecord)
+                        return this.saveEntity(emailRecord)
                                 .thenReturn(status);
                     } else {
                         return Mono.just(status);
@@ -61,11 +61,19 @@ public class MongoDBServiceImpl implements RepositoryService {
 
     @Override
     public Flux<Map<String, Object>> getTopFiveRecords() {
-        return emailDao.findTopEmailsWithCounts();
+        return this.emailDao.findTopEmailsWithCounts();
     }
 
     @Override
     public Mono<Long> getEmailStatistics(final Instant startDate, final Instant endDate) {
-        return emailDao.countBySentDateBetween(startDate, endDate);
+        return this.emailDao.countBySentDateBetween(startDate, endDate)
+                .flatMap(count -> {
+                    if (count > 0) {
+                        log.info("[getEmailStatistics] Successfully retrieved count: {}", count);
+                        return Mono.just(count);
+                    } else {
+                        return Mono.error(new RepositoryException(CodeException.EMPTY_LIST, null));
+                    }
+                });
     }
 }

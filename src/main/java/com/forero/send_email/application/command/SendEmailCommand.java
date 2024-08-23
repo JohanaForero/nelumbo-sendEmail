@@ -10,6 +10,6 @@ public class SendEmailCommand {
     private final EmailUseCase emailUseCase;
 
     public Mono<String> execute(final Email email) {
-        return emailUseCase.sendEmail(email);
+        return this.emailUseCase.sendEmail(email);
     }
 }

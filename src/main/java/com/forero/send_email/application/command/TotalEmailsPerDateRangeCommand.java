@@ -11,6 +11,6 @@ public class TotalEmailsPerDateRangeCommand {
     private final EmailUseCase emailUseCase;
 
     public Mono<Long> execute(final Instant startDate, final Instant endDate) {
-        return emailUseCase.getEmailStatistics(startDate, endDate);
+        return this.emailUseCase.getEmailStatisticsByRange(startDate, endDate);
     }
 }

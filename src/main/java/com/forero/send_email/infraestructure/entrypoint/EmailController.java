@@ -53,15 +53,14 @@ public class EmailController {
     }
 
     @GetMapping("/total")
-    public Mono<Integer> receiveEmailsSentByDateRange(
+    public Mono<Long> receiveEmailsSentByDateRange(
             @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime startDate,
             @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime endDate) {
-        Instant startInstant = startDate.toInstant();
-        Instant endInstant = endDate.toInstant();
-        return totalEmailsPerDateRangeCommand.execute(startInstant, endInstant)
-                .map(Long::intValue)
-                .doFirst(() -> log.info("[receiveEmailsSentByDateRange] Request received"))
-                .doOnSuccess(count -> log.info("[receiveEmailsSentByDateRange] Completed with count: {}", count))
-                .doOnError(error -> log.error("[getEmailsSent] Error occurred", error));
+        final Instant startInstant = startDate.toInstant();
+        final Instant endInstant = endDate.toInstant();
+        return this.totalEmailsPerDateRangeCommand.execute(startInstant, endInstant)
+                .doFirst(() -> log.info("[receiveEmailsSentByDateRange] Request startDate: {} and endDate: {}",
+                        startDate, endDate))
+                .doOnSuccess(count -> log.info("[receiveEmailsSentByDateRange] Response: {}", count));
     }
 }
