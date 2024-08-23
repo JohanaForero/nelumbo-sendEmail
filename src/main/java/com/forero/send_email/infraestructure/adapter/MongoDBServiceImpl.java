@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Map;
 
 @Slf4j
@@ -33,7 +33,7 @@ public class MongoDBServiceImpl implements RepositoryService {
                 .flatMap(status -> {
                     if ("Correo Enviado".equals(status)) {
                         EmailRecordEntity emailRecord = emailMapper.toEntity(email);
-                        emailRecord.setSentDate(LocalDateTime.now());
+                        emailRecord.setSentDate(Instant.now());
 
                         return saveEntity(emailRecord)
                                 .thenReturn(status);
@@ -62,5 +62,10 @@ public class MongoDBServiceImpl implements RepositoryService {
     @Override
     public Flux<Map<String, Object>> getTopFiveRecords() {
         return emailDao.findTopEmailsWithCounts();
+    }
+
+    @Override
+    public Mono<Long> getEmailStatistics(final Instant startDate, final Instant endDate) {
+        return emailDao.countBySentDateBetween(startDate, endDate);
     }
 }

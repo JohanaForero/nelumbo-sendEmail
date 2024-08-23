@@ -6,7 +6,7 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -19,10 +19,10 @@ public class EmailRecordEntity {
     private String plate;
     private String message;
     private String parkingName;
-    private LocalDateTime sentDate;
+    private Instant sentDate;
 
     public EmailRecordEntity(String id, String email, String plate, String message, String parkingName,
-                             LocalDateTime sentDate) {
+                             Instant sentDate) {
         this.id = id;
         this.email = email;
         this.plate = plate;

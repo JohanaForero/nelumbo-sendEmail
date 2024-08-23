@@ -2,6 +2,7 @@ package com.forero.send_email.infraestructure.configuration;
 
 import com.forero.send_email.application.command.GetTopEmailsQueryCommand;
 import com.forero.send_email.application.command.SendEmailCommand;
+import com.forero.send_email.application.command.TotalEmailsPerDateRangeCommand;
 import com.forero.send_email.application.service.RepositoryService;
 import com.forero.send_email.application.usecase.EmailUseCase;
 import lombok.RequiredArgsConstructor;
@@ -24,5 +25,10 @@ public class EmailBeanConfiguration {
     @Bean
     public GetTopEmailsQueryCommand getTopEmailsQueryCommand(final EmailUseCase emailUseCase) {
         return new GetTopEmailsQueryCommand(emailUseCase);
+    }
+
+    @Bean
+    public TotalEmailsPerDateRangeCommand totalEmailsPerDateRangeCommand(final EmailUseCase emailUseCase) {
+        return new TotalEmailsPerDateRangeCommand(emailUseCase);
     }
 }

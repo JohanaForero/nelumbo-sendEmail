@@ -17,6 +17,8 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort
 @Repository
 public class EmailDaoCustomImpl implements EmailDaoCustom {
 
+    private static final String EMAIL = "email";
+    private static final String COUNT = "count";
     private final ReactiveMongoTemplate mongoTemplate;
 
     public EmailDaoCustomImpl(ReactiveMongoTemplate mongoTemplate) {
@@ -26,13 +28,13 @@ public class EmailDaoCustomImpl implements EmailDaoCustom {
     @Override
     public Flux<Map<String, Object>> findTopEmailsWithCounts() {
         Aggregation aggregation = newAggregation(
-                group("email")
-                        .count().as("count")
-                        .last("email").as("email"),
-                sort(Sort.by(Sort.Order.desc("count"))),
+                group(EMAIL)
+                        .count().as(COUNT)
+                        .last(EMAIL).as(EMAIL),
+                sort(Sort.by(Sort.Order.desc(COUNT))),
                 limit(5),
-                project("count")
-                        .and("email").as("email")
+                project(COUNT)
+                        .and(EMAIL).as(EMAIL)
                         .andExclude("_id")
         );
 

@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Instant;
 import java.util.Map;
 
 @AllArgsConstructor
@@ -18,5 +19,9 @@ public class EmailUseCase {
 
     public Flux<Map<String, Object>> getTopFiveRecords() {
         return repositoryService.getTopFiveRecords();
+    }
+
+    public Mono<Long> getEmailStatistics(final Instant startDate, final Instant endDate) {
+        return repositoryService.getEmailStatistics(startDate, endDate);
     }
 }

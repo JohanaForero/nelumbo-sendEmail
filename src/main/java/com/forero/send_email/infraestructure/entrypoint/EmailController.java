@@ -2,21 +2,26 @@ package com.forero.send_email.infraestructure.entrypoint;
 
 import com.forero.send_email.application.command.GetTopEmailsQueryCommand;
 import com.forero.send_email.application.command.SendEmailCommand;
+import com.forero.send_email.application.command.TotalEmailsPerDateRangeCommand;
 import com.forero.send_email.infraestructure.dto.EmailRequestDto;
 import com.forero.send_email.infraestructure.dto.EmailResponseDto;
 import com.forero.send_email.infraestructure.mapper.EmailMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.Map;
 
 @Slf4j
@@ -27,6 +32,7 @@ public class EmailController {
     private static final String LOGGER_PREFIX = String.format("[%s] ", EmailController.class.getSimpleName());
     private final SendEmailCommand sendEmailCommand;
     private final GetTopEmailsQueryCommand getTopEmailsQueryCommand;
+    private final TotalEmailsPerDateRangeCommand totalEmailsPerDateRangeCommand;
     private final EmailMapper emailMapper;
 
     @PostMapping("/send")
@@ -44,5 +50,18 @@ public class EmailController {
         return this.getTopEmailsQueryCommand.execute()
                 .doFirst(() -> log.info(LOGGER_PREFIX + "[getTopEmails] Request"))
                 .doOnComplete(() -> log.info(LOGGER_PREFIX + "[getTopEmails] Completed"));
+    }
+
+    @GetMapping("/total")
+    public Mono<Integer> receiveEmailsSentByDateRange(
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime endDate) {
+        Instant startInstant = startDate.toInstant();
+        Instant endInstant = endDate.toInstant();
+        return totalEmailsPerDateRangeCommand.execute(startInstant, endInstant)
+                .map(Long::intValue)
+                .doFirst(() -> log.info("[receiveEmailsSentByDateRange] Request received"))
+                .doOnSuccess(count -> log.info("[receiveEmailsSentByDateRange] Completed with count: {}", count))
+                .doOnError(error -> log.error("[getEmailsSent] Error occurred", error));
     }
 }
