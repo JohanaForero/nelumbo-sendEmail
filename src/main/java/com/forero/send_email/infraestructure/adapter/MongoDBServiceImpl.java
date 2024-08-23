@@ -72,7 +72,7 @@ public class MongoDBServiceImpl implements RepositoryService {
                         log.info("[getEmailStatistics] Successfully retrieved count: {}", count);
                         return Mono.just(count);
                     } else {
-                        return Mono.error(new RepositoryException(CodeException.EMPTY_LIST, null));
+                        return Mono.error(new RepositoryException(CodeException.EMPTY_LIST, null, startDate, endDate));
                     }
                 });
     }

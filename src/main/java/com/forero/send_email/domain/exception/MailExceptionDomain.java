@@ -1,5 +1,8 @@
 package com.forero.send_email.domain.exception;
 
+import lombok.Getter;
+
+@Getter
 public class MailExceptionDomain extends RuntimeException {
     private final CodeException codeException;
 
@@ -12,10 +15,6 @@ public class MailExceptionDomain extends RuntimeException {
         return fields.length > 0
                 ? String.format(codeException.getMessageFormat(), (Object[]) fields)
                 : codeException.getMessageFormat();
-    }
-
-    public CodeException getCodeException() {
-        return this.codeException;
     }
 
 }
